@@ -20,7 +20,6 @@ export default function landingPage () {
                 <Link href="/signup">SignUp</Link>
                 </Button>
             </div>
-            
         </>
     )
 }
