@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 //importted cn from utils
 import {cn} from "@/lib/utils";
 import "./globals.css";
+//importing theme provider from components
+import { ThemeProvider } from "@/components/theme-provider";
 
 //updated the font style to poppins
 const poppins = Poppins({
@@ -22,12 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       {/*added the poppins and dark class here wraped in cn*/}
-      <body
-        className={cn(poppins.className, "dark")}
-      >
+      <body className={cn(poppins.className)}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> 
         {children}
+        </ThemeProvider>
       </body>
     </html>
   );
