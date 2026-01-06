@@ -158,3 +158,8 @@
     font-size: 1rem;
   }
 }
+
+.my-element-top {
+  position: relative; /* z-index only works on positioned elements */
+  z-index: 10;
+}
