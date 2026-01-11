@@ -13,6 +13,67 @@ import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue, SelectI
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { PasswordInput } from "@/components/ui/password-input";
+
+
+/*here we are defining the zod schema for form validation
+we are defining the schema in parts and then combining them
+using the and method of zod
+this makes it easier to read and maintain the code*/
+/*
+const baseSchema = z.object({
+    email: z.email(),
+     dob: z.date().refine((date) => {
+        const today = new Date();
+        const age = today.getFullYear() - date.getFullYear();
+        return age <= 18;
+    }, "You must be at least 18 years old"),
+})
+
+const accountSchema = z.object({
+    accountType: z.enum(["personal", "company"]),
+    companyName: z.string().optional(),
+    //coerce is for converting a string to number
+    //we need to do this as by default we get the data in string format
+    numberOfEmployees: z.coerce.number().optional(),
+}).superRefine((data, ctx) => {
+    if (data.accountType === "company") {
+        if (!data.companyName) {
+            ctx.addIssue({
+                path: ["companyName"],
+                message: "Company name is required for company accounts",
+                code: "custom"
+            });
+        }
+        if (!data.numberOfEmployees || data.numberOfEmployees <= 0) {
+            ctx.addIssue({
+                path: ["numberOfEmployees"],
+                message: "Number of employees is required for company accounts",
+                code: "custom"
+            });
+        }
+    }})
+    
+
+const passwordSchema = z.object({
+    password: z.string().min(8, "Password must be at least 8 characters long").refine((val) => /[A-Z]/.test(val), "Password must contain at least one uppercase letter").refine((val) => /[a-z]/.test(val), "Password must contain at least one lowercase letter").refine((val) => /[0-9]/.test(val), "Password must contain at least one number").refine((val) => /[!@#$%^&*(),.?":{}|<>]/.test(val), "Password must contain at least one special character"),
+    passwordConfirm: z.string()
+}).superRefine((data, ctx) => {
+    //here data contains the data entered in the form
+    //ctx is the context object which we can use to add custom errors
+
+    if(data.password !== data.passwordConfirm){
+        ctx.addIssue({
+            path: ["passwordConfirm"],
+            message: "Passwords do not match",
+            code: "custom"
+        });
+    }
+
+})
+
+const formSchema = baseSchema.and(accountSchema).and(passwordSchema);*/
+
 
 //here we are setting up the form schema
 //where we are defining the type of data for each feild
@@ -30,10 +91,19 @@ const formSchema = z.object({
         const age = today.getFullYear() - date.getFullYear();
         return age <= 18;
     }, "You must be at least 18 years old"),
+    password: z.string().min(8, "Password must be at least 8 characters long").refine((val) => /[A-Z]/.test(val), "Password must contain at least one uppercase letter").refine((val) => /[a-z]/.test(val), "Password must contain at least one lowercase letter").refine((val) => /[0-9]/.test(val), "Password must contain at least one number").refine((val) => /[!@#$%^&*(),.?":{}|<>]/.test(val), "Password must contain at least one special character"),
+    passwordConfirm: z.string()
 }).superRefine((data, ctx) => {
     //here data contains the data entered in the form
     //ctx is the context object which we can use to add custom errors
 
+    if(data.password !== data.passwordConfirm){
+        ctx.addIssue({
+            path: ["passwordConfirm"],
+            message: "Passwords do not match",
+            code: "custom"
+        });
+    }
     //here we are checking if the account type is company
     //then company name and number of employees are required fields
     if (data.accountType === "company") {
@@ -248,6 +318,51 @@ export default function LoginPage() {
                                 }
                                 />
 
+                                <Controller
+                                    name = "password"
+                                    control={form.control}
+                                    render = {({field, fieldState}) => (
+                                        // The main Field component. We use data-invalid for styling errors.
+                                        <Field data-invalid={fieldState.invalid ? "" : undefined}>
+                                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                                        <PasswordInput
+                                        {...field}
+                                        id={field.name}
+                                        placeholder="••••••••"
+                                        aria-invalid={fieldState.invalid ? "true" : "false"}
+                                        />
+                                            {/* Show error message if validation fails */}
+
+                                        {fieldState.error && (
+                                            <FieldError>{fieldState.error.message}</FieldError>
+                                        )}
+                                        </Field>
+                                    )}
+                                />
+
+                                <Controller
+                                    name = "passwordConfirm"
+                                    control={form.control}
+                                    render = {({field, fieldState}) => (
+                                        // The main Field component. We use data-invalid for styling errors.
+                                        <Field data-invalid={fieldState.invalid ? "" : undefined}>
+                                        <FieldLabel htmlFor={field.name}>Confirm  Password</FieldLabel>
+                                        <Input
+                                        {...field}
+                                        id={field.name}
+                                        placeholder="••••••••"
+                                        type="passsword"
+                                        aria-invalid={fieldState.invalid ? "true" : "false"}
+                                        />
+                                            {/* Show error message if validation fails */}
+
+                                        {fieldState.error && (
+                                            <FieldError>{fieldState.error.message}</FieldError>
+                                        )}
+                                        </Field>
+                                    )}
+                                />
+                            
 
                     </FieldGroup>
                     <Button type="submit" className="w-full mt-6">
