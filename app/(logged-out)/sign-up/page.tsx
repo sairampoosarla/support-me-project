@@ -9,11 +9,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldGroup, FieldLabel, FieldDescription, FieldError, FieldContent } from "@/components/ui/field";
 import {Input} from "@/components/ui/input";
 
+import { useRouter } from "next/navigation";
+
 import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue, SelectItem, SelectLabel } from "@/components/ui/select";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Checkbox } from "@/components/ui/checkbox";
+//import { Fi } from "zod/v4/locales";
 
 
 /*here we are defining the zod schema for form validation
@@ -84,15 +88,16 @@ const formSchema = z.object({
     companyName: z.string().optional(),
     //coerce is for converting a string to number
     //we need to do this as by default we get the data in string format
-    numberOfEmployees: z.coerce.number().optional(),
+    numberOfEmployees: z.number().optional(),
     //adding new date type fields
     dob: z.date().refine((date) => {
         const today = new Date();
         const age = today.getFullYear() - date.getFullYear();
-        return age <= 18;
+        return age >= 18;
     }, "You must be at least 18 years old"),
     password: z.string().min(8, "Password must be at least 8 characters long").refine((val) => /[A-Z]/.test(val), "Password must contain at least one uppercase letter").refine((val) => /[a-z]/.test(val), "Password must contain at least one lowercase letter").refine((val) => /[0-9]/.test(val), "Password must contain at least one number").refine((val) => /[!@#$%^&*(),.?":{}|<>]/.test(val), "Password must contain at least one special character"),
-    passwordConfirm: z.string()
+    passwordConfirm: z.string(),
+    acceptTerms: z.boolean().refine((val) => val === true, "You must accept the terms and conditions"),
 }).superRefine((data, ctx) => {
     //here data contains the data entered in the form
     //ctx is the context object which we can use to add custom errors
@@ -126,14 +131,21 @@ const formSchema = z.object({
 
 export default function LoginPage() {
 
-    //const router = useRouter()
+    const router = useRouter()
     
     //here we are passing the zod type to useForm from react-hook-form
     //so that react-hook-form and zod can comunicate with each other
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: ""
+            email: "",
+            accountType: "personal",
+            companyName: "",
+            numberOfEmployees: undefined,
+            dob: new Date(2000, 0, 1),
+            password: "",
+            passwordConfirm: "",
+            acceptTerms: false,
         }
     })
 
@@ -141,6 +153,7 @@ export default function LoginPage() {
     function onSubmit(data: z.infer<typeof formSchema>){
         console.log("entreted the function")
         console.log(data)
+        router.push("/dashboard")
     }
 
     const accountType = form.watch("accountType")
@@ -249,11 +262,12 @@ export default function LoginPage() {
                                     <Field data-invalid={fieldState.invalid ? "" : undefined}>
                                     <FieldLabel htmlFor={field.name}>Number of Employees</FieldLabel>
                                     <Input
-                                    {...field}
                                     id={field.name}
                                     placeholder="Employees"
                                     min={0}
                                     type="number"
+                                    value={field.value ?? ""}
+                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
                                     aria-invalid={fieldState.invalid ? "true" : "false"}
                                     />
                                         {/* Show error message if validation fails */}
@@ -354,6 +368,31 @@ export default function LoginPage() {
                                         type="passsword"
                                         aria-invalid={fieldState.invalid ? "true" : "false"}
                                         />
+                                            {/* Show error message if validation fails */}
+
+                                        {fieldState.error && (
+                                            <FieldError>{fieldState.error.message}</FieldError>
+                                        )}
+                                        </Field>
+                                    )}
+                                />
+
+                                <Controller
+                                    name = "acceptTerms"
+                                    control={form.control}
+                                    render = {({field, fieldState}) => (
+                                        // The main Field component. We use data-invalid for styling errors.
+                                        <Field data-invalid={fieldState.invalid ? "" : undefined}>
+                                        <div className="flex gap-2 items-center">
+                                            <Checkbox checked={field.value} onCheckedChange={field.onChange} id={field.name}/>
+                                            <FieldLabel htmlFor={field.name}>
+                                                I accept the Terms and Conditions
+                                            </FieldLabel>
+                                        </div>
+                                        <FieldDescription>
+                                            You must accept our terms and conditions to proceed.
+                                            <Link href="/terms" className="text-primary"> Read Terms</Link>
+                                        </FieldDescription>
                                             {/* Show error message if validation fails */}
 
                                         {fieldState.error && (
