@@ -16,7 +16,9 @@ export default function Employeestats() {
                     <p className="text-5xl font-bold">10</p>
                     </div>
                     <div>
-                        <Button size="sm" asChild>
+                        {/* Using Button component with 'asChild' to render a Link inside it */}
+                        {/*added a custom size 'xs' for smaller button*/}
+                        <Button size="xs" asChild>
                             <Link href="/dashboard/employees">View all</Link>
                         </Button>
                     </div>
