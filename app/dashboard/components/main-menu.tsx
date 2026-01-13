@@ -13,11 +13,8 @@ export default function MainMenu() {
                 <MenueTitle />
             </div>
             {/* Each Menu Items are added here */}
-            <div className="grow py-4">
-                <div>
-                    <LayoutDashboard/>
-                <MenuItem href="/dashboard">Dashboard</MenuItem>
-                </div>
+            <div className="grow py-4"> 
+                <MenuItem href="/dashboard">Dashboard</MenuItem>                
                 <MenuItem href="/dashboard/teams">Teams</MenuItem>
                 <MenuItem href="/dashboard/employees">Employees</MenuItem>
                 <MenuItem href="/dashboard/account">Account</MenuItem>

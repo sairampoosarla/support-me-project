@@ -19,4 +19,5 @@ export default function MenuItem({children, href}:Props) {
     const isActive = pathName === href;
     //based on the active status we are applying different styles to the menu item so that the active menu item is highlighted
     return <Link className={isActive ? cn("block p-2 bg-primary rounded-md text-white hover:text-white hover:bg-primary") :  cn("p-2 block hover:bg-white rounded-md text-muted-foreground hover:text-foreground")}href={href}>{children}</Link>;
+    
 }
