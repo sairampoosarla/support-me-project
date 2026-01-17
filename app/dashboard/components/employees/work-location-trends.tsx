@@ -1,5 +1,5 @@
 "use client"
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const data = [
   {
@@ -70,7 +70,14 @@ export default function WorkLocationTrends() {
         <BarChart data={data}>
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
+            <Tooltip separator=": " formatter={(value, name) => {
+                if (name==="wfh") return [value, "Work from Home"]
+                if (name==="office") return [value, "Work from Office"]
+            }} wrapperClassName="!text-sm rounded-md"/>
+            <Legend iconType="circle" formatter={(value) => {
+                if(value==="office") return<div>Work from office</div>
+                if(value==="wfh") return<div>Work from home</div>
+            }}/>
             <Bar dataKey="office" fill="#ec4899" stackId="a"/>
             <Bar dataKey="wfh" fill="#6b7280" stackId="a" radius={[4 ,4, 0, 0]}/>
             </BarChart>;
