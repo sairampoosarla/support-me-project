@@ -3,11 +3,12 @@ import MenuItem from "./menu-item";
 import MenueTitle from "./menu-title";
 import Link from "next/link";
 import { LayoutDashboard } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function MainMenu() {
+export default function MainMenu({className}: {className?: string}) {
     return (
         //flex and flex-col are added to make the menu items stack vertically
-        <div className="bg-muted overflow-auto p-4 flex flex-col">
+        <div className={cn("bg-muted overflow-auto p-4 flex flex-col", className)}>
             {/* Menu Title Component is added here */}
             <div className="border-b pb-4 border-b-zinc-300">
                 <MenueTitle />
