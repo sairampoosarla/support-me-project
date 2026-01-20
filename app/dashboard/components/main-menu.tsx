@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 export default function MainMenu({className}: {className?: string}) {
     return (
         //flex and flex-col are added to make the menu items stack vertically
-        <div className={cn("bg-muted overflow-auto p-4 flex flex-col", className)}>
+        <div className={cn("md:bg-muted overflow-auto p-4 flex flex-col", className)}>
             {/* Menu Title Component is added here */}
-            <div className="border-b pb-4 border-b-zinc-300">
+            <div className="hidden md:blockborder-b pb-4 border-b-zinc-300">
                 <MenueTitle />
             </div>
             {/* Each Menu Items are added here */}

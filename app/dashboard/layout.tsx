@@ -11,14 +11,14 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
     const isDesktop = useMediaQuery("(min-width: 768px)");
     return (
         //The grid configuration here will be two columns on medium and larger screens
-        <div className="grid md:grid-cols-[250px_1fr] h-screen">
+        <div className="md:grid md:grid-cols-[250px_1fr] h-screen">
             {/* Main Menu Component is added here and it would be shown only on screens larger than medium */}
             <MainMenu className="hidden md:flex"/>
             {/* Mobile Menu - shown only on small screens */}
             {!isDesktop && (
                 <div className="flex justify-between md:hidden sticky top-0 left-0 bg-background border-b border-b-zinc-300 p-4">
                 < MenueTitle />
-                <Drawer>
+                <Drawer direction="right">
                     <DrawerTrigger>
                         {/* Menu Icon from lucide-react library is used here */}
                         <MenuIcon />
